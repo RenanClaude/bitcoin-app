@@ -1,0 +1,25 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model BtcDailyPrice {
+  id         Int      @id @default(autoincrement())
+  price      Decimal  @db.Decimal(18, 8) // Decimal precisa de instalação adicional
+  date       DateTime @unique // DateTime é usado para DATE e TIMESTAMP
+  created_at DateTime @default(now())
+
+  @@map("btc_daily_prices") // mapeia para a tabela SQL com esse nome
+}
+

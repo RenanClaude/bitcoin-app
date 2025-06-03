@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+/* Define variáveis CSS globais acessíveis em todo o projeto. */
+:root {
+  --background: #000922;
+  --foreground: #ffffff;
+}
+
+/* Isso não é uma sintaxe padrão do Tailwind CSS nem do CSS puro. */
+/* Provavelmente faz parte de alguma configuração personalizada, plugin, ou extensão do Tailwind que aceita diretivas @theme inline. */
+/* Esse bloco parece querer criar aliases para as variáveis CSS: */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Define valores alternativos para as variáveis quando o sistema do usuário estiver no modo escuro: */
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+
+/* Aplica as variáveis no corpo do site: */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.5rem;
+}
