@@ -23,7 +23,12 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyInterface {
     const created = await this.prisma.btcDailyPrice.create({
       data: { price: btcDailyPrice.price, date: btcDailyPrice.date },
     });
-    return new BtcDailyPrice(Number(created.price.toFixed(2)), created.date, created.updatedAt, created.id);
+    return new BtcDailyPrice(
+      Number(created.price.toFixed(2)),
+      created.date,
+      created.updatedAt,
+      created.id
+    );
   }
 
   // async findAllDesc(): Promise<BtcDailyPrice[]> {

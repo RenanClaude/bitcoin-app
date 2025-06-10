@@ -1,24 +1,21 @@
-// src/presentation/controllers/transaction-controller.ts
-import { Request, Response } from 'express';
-import { CreateTransaction } from '../../domain/use-cases/btcDailyPrice/create-btcDailyPrice';
-import { BtcDailyPrice } from '../../domain/entities/BtcDailyPrice';
+import { Request, Response } from "express";
+import { CreateBtcDailyPrice } from "../../domain/use-cases/btcDailyPrice/create-btcDailyPrice";
+import { BtcDailyPrice } from "../../domain/entities/BtcDailyPrice";
 
 export class BtcDailyPriceController {
-  constructor(private readonly createTransaction: CreateTransaction) {}
+  constructor(private readonly createBtcDailyPrice: CreateBtcDailyPrice) {}
 
   async create(req: Request, res: Response): Promise<void> {
     try {
       const { date, price } = req.body;
-      const transaction = await this.createTransaction.execute({
-        date: new Date(date),
-        amount: Number(amount),
-        description,
-        status: status as TransactionStatus,
-        category,
-      });
-      res.status(201).json(transaction);
+      const btcDailyPrice = await this.createBtcDailyPrice.execute({ date, price });
+      res.status(201).json(btcDailyPrice);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      if (error instanceof Error) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(400).json({ error: "Unknown error" });
+      }
     }
   }
 

@@ -1,4 +1,3 @@
-// src/config/database.ts
 import prisma from '../infrastructure/database/prisma/prisma-client';
 
 export async function initializeDatabase(): Promise<void> {
