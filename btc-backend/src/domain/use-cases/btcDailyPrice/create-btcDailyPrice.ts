@@ -1,19 +1,12 @@
-// src/domain/use-cases/transaction/create-transaction.ts
-import { Transaction, TransactionStatus } from '../../entities/transaction';
-import { TransactionRepository } from '../../repositories/transaction-repository';
+import { BtcDailyPrice } from "../../entities/BtcDailyPrice";
+import BtcDailyInterface from "../../repositories/BtcDailyPrice-repository";
 
-export class CreateTransaction {
-  constructor(private readonly transactionRepository: TransactionRepository) {}
+export class CreateBtcDailyPrice {
+  constructor(private readonly BtcDailyInterface: BtcDailyInterface) {}
 
-  async execute(input: {
-    date: Date;
-    amount: number;
-    description: string;
-    status: TransactionStatus;
-    category?: string;
-  }): Promise<Transaction> {
-    const transaction = Transaction.create(input);
-    await this.transactionRepository.create(transaction);
-    return transaction;
+  async execute(input: { price: number; date: Date }): Promise<BtcDailyPrice> {
+    const btcDailyPrice = new BtcDailyPrice(input.price, input.date);
+    await this.BtcDailyInterface.create(btcDailyPrice);
+    return btcDailyPrice;
   }
 }

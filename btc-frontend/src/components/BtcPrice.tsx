@@ -12,13 +12,13 @@ export default function BtcPrice() {
           "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
         );
         const data = await res.json();
-        console.log(data);
         setPrice(
           parseFloat(data.price).toLocaleString("en-US", {
             style: "currency",
             currency: "USD",
           })
         );
+        console.log(data);
       } catch (error) {
         console.error("Erro ao buscar o preço do bitcoin", error);
         setPrice(null);
@@ -26,8 +26,8 @@ export default function BtcPrice() {
     };
     fetchPrice();
 
-    // const interval = setInterval(fetchPrice, 10000);
-    // return () => clearInterval(interval);
+    const interval = setInterval(fetchPrice, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   return <span className="flex items-center bg-amber-800">{price && "Preço do Bitcoin: " + price}</span>;

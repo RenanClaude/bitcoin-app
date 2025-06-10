@@ -1,14 +1,14 @@
 // src/presentation/controllers/transaction-controller.ts
 import { Request, Response } from 'express';
-import { CreateTransaction } from '../../domain/use-cases/transaction/create-transaction';
-import { TransactionStatus } from '../../domain/entities/transaction';
+import { CreateTransaction } from '../../domain/use-cases/btcDailyPrice/create-btcDailyPrice';
+import { BtcDailyPrice } from '../../domain/entities/BtcDailyPrice';
 
-export class TransactionController {
+export class BtcDailyPriceController {
   constructor(private readonly createTransaction: CreateTransaction) {}
 
   async create(req: Request, res: Response): Promise<void> {
     try {
-      const { date, amount, description, status, category } = req.body;
+      const { date, price } = req.body;
       const transaction = await this.createTransaction.execute({
         date: new Date(date),
         amount: Number(amount),

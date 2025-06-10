@@ -10,7 +10,7 @@ RUN npm install
 COPY . .
 
 # Gera o Prisma Client (espera que prisma/schema.prisma exista)
-RUN npx prisma generate
+RUN npx prisma generate --schema=src/infrastructure/database/prisma/schema.prisma
 
 EXPOSE 3001
 
