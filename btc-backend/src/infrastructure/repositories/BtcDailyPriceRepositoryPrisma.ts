@@ -22,7 +22,14 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyInterface {
   async create(btcDailyPrice: BtcDailyPrice): Promise<BtcDailyPrice> {
     const created = await this.prisma.btcDailyPrice.create({
       data: { price: btcDailyPrice.price, date: btcDailyPrice.date },
+      select: {
+        id: true,
+        price: true,
+        date: true,
+        updatedAt: true,
+      },
     });
+    console.log(created);
     return new BtcDailyPrice(
       Number(created.price.toFixed(2)),
       created.date,
@@ -31,10 +38,13 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyInterface {
     );
   }
 
-  // async findAllDesc(): Promise<BtcDailyPrice[]> {
-  //   const result = await this.prisma.btcDailyPrice.findMany({ orderBy: { date: "desc" } });
-  //   return result.map((r) => new BtcDailyPrice(r.id, r.price, r.date, r.created_at));
-  // }
+  async findAll(): Promise<BtcDailyPrice[]> {
+    const result = await this.prisma.btcDailyPrice.findMany({
+      orderBy: { date: "desc" },
+    });
+    const list = result.map((r) => new BtcDailyPrice(r.price, r.date, r.updatedAt, r.id));
+    return list;
+  }
 
   // async deleteById(id: number): Promise<void> {
   //   await this.prisma.btcDailyPrice.delete({ where: { id } });

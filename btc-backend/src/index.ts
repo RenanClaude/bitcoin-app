@@ -1,12 +1,11 @@
-// src/index.ts
 import express from 'express';
 import { initializeDatabase } from './config/database';
 import { BtcDailyPriceController } from './presentation/controllers/btcDailyPrice-controller';
-import { CreateBtcDailyPrice } from './domain/use-cases/btcDailyPrice/create-btcDailyPrice';
-import { UpdateTransaction } from './domain/use-cases/btcDailyPrice/update-btcDailyPrice';
-import { DeleteTransaction } from './domain/use-cases/btcDailyPrice/delete-btcDailyPrice';
+import { CreateBtcDailyPrice } from './domain/use-cases/BtcDailyPrice/create-btcDailyPrice';
+import { UpdateTransaction } from './domain/use-cases/BtcDailyPrice/update-btcDailyPrice';
+import { DeleteTransaction } from './domain/use-cases/BtcDailyPrice/delete-btcDailyPrice';
 // import { GetTransaction } from './domain/use-cases/btcDailyPrice/get-btcDailyPrice';
-import { ListTransactions } from './domain/use-cases/btcDailyPrice/list-btcDailyPrice';
+import { ListBtcDailyPrice } from './domain/use-cases/BtcDailyPrice/list-btcDailyPrice';
 import { BtcDailyPriceRepositoryPrisma } from './infrastructure/repositories/BtcDailyPriceRepositoryPrisma';
 import prisma from './infrastructure/database/prisma/prisma-client';
 import { btcDailyPriceRoutes } from './presentation/routes/btcDailyPrice-routes';
@@ -20,13 +19,13 @@ const createBtcDailyPrice = new CreateBtcDailyPrice(BtcDailyPriceRepository);
 // const updateBtcDailyPrice = new UpdateTransaction(BtcDailyPriceRepository);
 // const deleteBtcDailyPrice = new DeleteTransaction(BtcDailyPriceRepository);
 // const getBtcDailyPrice = new GetTransaction(BtcDailyPriceRepository);
-// const listBtcDailyPrice = new ListTransactions(BtcDailyPriceRepository);
+const listBtcDailyPrice = new ListBtcDailyPrice(BtcDailyPriceRepository);
 const btcDailyPriceController = new BtcDailyPriceController(
   createBtcDailyPrice,
   // updateBtcDailyPrice,
   // deleteBtcDailyPrice,
   // getBtcDailyPrice,
-  // listBtcDailyPrice,
+  listBtcDailyPrice,
 );
 
 // Define rotas

@@ -7,7 +7,6 @@ export class BtcDailyPrice {
     readonly updatedAt?: Date,
     readonly id?: number
   ) {
-    this.id = id ?? 0;
   }
 
   public get price(): number {

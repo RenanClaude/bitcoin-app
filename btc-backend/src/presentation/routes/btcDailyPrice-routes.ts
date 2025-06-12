@@ -9,7 +9,7 @@ export function btcDailyPriceRoutes(controller: BtcDailyPriceController): Router
   // router.put('/:id', controller.update.bind(controller));
   // router.delete('/:id', controller.delete.bind(controller));
   // router.get('/:id', controller.getById.bind(controller));
-  // router.get('/', controller.list.bind(controller));
+  router.get('/', controller.list.bind(controller));
 
   return router;
 }
