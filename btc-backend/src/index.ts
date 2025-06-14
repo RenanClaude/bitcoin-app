@@ -14,12 +14,12 @@ const app = express();
 app.use(express.json());
 
 // Inicializa dependências
-const BtcDailyPriceRepository = new BtcDailyPriceRepositoryPrisma(prisma);
-const createBtcDailyPrice = new CreateBtcDailyPrice(BtcDailyPriceRepository);
+const btcDailyPriceRepository = new BtcDailyPriceRepositoryPrisma(prisma);
+const createBtcDailyPrice = new CreateBtcDailyPrice(btcDailyPriceRepository);
 // const updateBtcDailyPrice = new UpdateTransaction(BtcDailyPriceRepository);
 // const deleteBtcDailyPrice = new DeleteTransaction(BtcDailyPriceRepository);
 // const getBtcDailyPrice = new GetTransaction(BtcDailyPriceRepository);
-const listBtcDailyPrice = new ListBtcDailyPrice(BtcDailyPriceRepository);
+const listBtcDailyPrice = new ListBtcDailyPrice(btcDailyPriceRepository);
 const btcDailyPriceController = new BtcDailyPriceController(
   createBtcDailyPrice,
   // updateBtcDailyPrice,
