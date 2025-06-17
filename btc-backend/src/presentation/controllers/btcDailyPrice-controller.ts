@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { CreateBtcDailyPrice } from "../../domain/use-cases/BtcDailyPrice/create-btcDailyPrice";
-import { ListBtcDailyPrice } from "../../domain/use-cases/BtcDailyPrice/list-btcDailyPrice";
+import { CreateBtcDailyPrice } from "../../domain/use-cases/BtcDailyPrice/create-BtcDailyPrice";
+import { ListBtcDailyPrice } from "../../domain/use-cases/BtcDailyPrice/list-BtcDailyPrice";
 
 export class BtcDailyPriceController {
   constructor(

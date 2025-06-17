@@ -1,8 +1,8 @@
 import { BtcDailyPrice } from "../../domain/entities/BtcDailyPrice";
-import BtcDailyInterface from "../../domain/repositories/BtcDailyPrice-repository";
+import BtcDailyRepositoryInterface from "../../domain/repositories/BtcDailyPrice-repository";
 import { PrismaClient } from "@prisma/client";
 
-export class BtcDailyPriceRepositoryPrisma implements BtcDailyInterface {
+export class BtcDailyPriceRepositoryPrisma implements BtcDailyRepositoryInterface {
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(btcDailyPrice: BtcDailyPrice): Promise<BtcDailyPrice> {

@@ -1,6 +1,6 @@
 import { BtcDailyPrice } from "../entities/BtcDailyPrice";
 
-export default interface BtcDailyInterface {
+export default interface BtcDailyRepositoryInterface {
   create(btcDailyPrice: BtcDailyPrice): Promise<BtcDailyPrice>;
   findAll(): Promise<BtcDailyPrice[]>;
   getMissingDates(startDate: Date, endDate: Date): Promise<Date[]>;
