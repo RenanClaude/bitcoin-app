@@ -5,6 +5,7 @@ import { CreateBtcDailyPrice } from './domain/use-cases/BtcDailyPrice/create-Btc
 import { UpdateTransaction } from './domain/use-cases/BtcDailyPrice/update-BtcDailyPrice';
 import { DeleteTransaction } from './domain/use-cases/BtcDailyPrice/delete-BtcDailyPrice';
 import { ListBtcDailyPrice } from './domain/use-cases/BtcDailyPrice/list-BtcDailyPrice';
+import { MissingBtcDailyPrice } from './domain/use-cases/BtcDailyPrice/missing-BtcDailyPrice';
 import { BtcDailyPriceRepositoryPrisma } from './infrastructure/repositories/BtcDailyPriceRepositoryPrisma';
 import prisma from './infrastructure/database/prisma/prisma-client';
 import { btcDailyPriceRoutes } from './presentation/routes/btcDailyPrice-routes';
@@ -24,12 +25,14 @@ const createBtcDailyPrice = new CreateBtcDailyPrice(btcDailyPriceRepository);
 // const deleteBtcDailyPrice = new DeleteTransaction(BtcDailyPriceRepository);
 // const getBtcDailyPrice = new GetTransaction(BtcDailyPriceRepository);
 const listBtcDailyPrice = new ListBtcDailyPrice(btcDailyPriceRepository);
+const missingBtcDailyPrice = new MissingBtcDailyPrice(btcDailyPriceRepository);
 const btcDailyPriceController = new BtcDailyPriceController(
   createBtcDailyPrice,
   // updateBtcDailyPrice,
   // deleteBtcDailyPrice,
   // getBtcDailyPrice,
   listBtcDailyPrice,
+  missingBtcDailyPrice
 );
 
 // Define rotas

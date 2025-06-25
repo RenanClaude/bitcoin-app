@@ -36,7 +36,6 @@ export class SyncBtcDailyPriceJob {
       "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
     );
     const date = new Date();
-    date.setHours(23, 59, 59, 999);
     return { date, price: parseFloat(response.data.price) };
   }
 
@@ -44,10 +43,13 @@ export class SyncBtcDailyPriceJob {
     // Executa imediatamente ao iniciar a API
     this.syncBtcDailyPrice.execute().catch(console.error);
 
-    // Agendamento diário às 23:59 (descomentar para ativar)
-    cron.schedule('59 23 * * *', () => {
-      this.syncBtcDailyPrice.execute().catch(console.error);
-    });
+    // Agendamento diário às 20:59. O cron funciona por padrão no horário UTC (Coordinated Universal Time).
+    // Brasília está no fuso horário UTC-3, então:20:59h em Brasília = 23:59.
+      cron.schedule(
+      "00 21 * * *",() => {
+        this.syncBtcDailyPrice.execute().catch(console.error);
+      },{timezone: "America/Sao_Paulo", scheduled: true,}
+    );
   }
 }
-// 
+//

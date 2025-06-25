@@ -15,7 +15,7 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyRepositoryInterfac
         updatedAt: true,
       },
     });
-    console.log(created);
+    // console.log(created);
     return new BtcDailyPrice(
       Number(created.price.toFixed(2)),
       created.date,
@@ -32,7 +32,10 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyRepositoryInterfac
     return list;
   }
 
-  async getMissingDates(startDate: Date, endDate: Date): Promise<Date[]> {
+  async getMissingDates(startDate: Date, endDate: Date): Promise<string[]> {
+    startDate = new Date(startDate); // Cópia para não alterar a original
+    endDate = new Date(endDate);
+    startDate.setHours(0, 0, 0, 0);
     const existingDates = await this.prisma.btcDailyPrice.findMany({
       where: {
         date: {
@@ -42,18 +45,21 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyRepositoryInterfac
       },
       select: { date: true },
     });
-
-    const existingDateSet = new Set(existingDates.map(d => d.date.toISOString().split('T')[0]));
-    const missingDates: Date[] = [];
+    console.log("ÚLTIMA DATA: " + existingDates[existingDates.length - 1]?.date.toISOString());
+    const existingDateSet = new Set(
+      existingDates.map((d) => d.date.toISOString().split("T")[0])
+    );
+    const missingDates: string[] = [];
     const currentDate = new Date(startDate);
+    currentDate.setHours(0, 0, 0);
 
     while (currentDate <= endDate) {
-      if (!existingDateSet.has(currentDate.toISOString().split('T')[0])) {
-        missingDates.push(new Date(currentDate));
+      if (!existingDateSet.has(currentDate.toISOString().split("T")[0])) {
+        const date = new Date(currentDate);
+        missingDates.push(date.toISOString().split("T")[0]);
       }
       currentDate.setDate(currentDate.getDate() + 1);
     }
-
     return missingDates;
   }
 

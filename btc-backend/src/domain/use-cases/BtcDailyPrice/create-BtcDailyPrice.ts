@@ -6,6 +6,7 @@ export class CreateBtcDailyPrice {
 
   async execute(input: { price: number; date: Date }): Promise<BtcDailyPrice> {
     const btcDailyPrice = new BtcDailyPrice(input.price, input.date);
+    console.log("No use case: " + btcDailyPrice.date)
     const res = await this.btcDailyRepositoryInterface.create(btcDailyPrice);
     return res;
   }
