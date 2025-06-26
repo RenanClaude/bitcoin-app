@@ -15,7 +15,6 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyRepositoryInterfac
         updatedAt: true,
       },
     });
-    // console.log(created);
     return new BtcDailyPrice(
       Number(created.price.toFixed(2)),
       created.date,
@@ -36,6 +35,7 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyRepositoryInterfac
     startDate = new Date(startDate); // Cópia para não alterar a original
     endDate = new Date(endDate);
     startDate.setHours(0, 0, 0, 0);
+    
     const existingDates = await this.prisma.btcDailyPrice.findMany({
       where: {
         date: {
@@ -45,7 +45,7 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyRepositoryInterfac
       },
       select: { date: true },
     });
-    console.log("ÚLTIMA DATA: " + existingDates[existingDates.length - 1]?.date.toISOString());
+
     const existingDateSet = new Set(
       existingDates.map((d) => d.date.toISOString().split("T")[0])
     );
@@ -63,6 +63,33 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyRepositoryInterfac
     return missingDates;
   }
 
+  async findById(id: number): Promise<BtcDailyPrice | null> {
+    const result = await this.prisma.btcDailyPrice.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    return result
+      ? new BtcDailyPrice(result.price, result.date, result.updatedAt, result.id)
+      : null;
+  }
+
+    async deleteOldestIfExceeds(maxRecords: number): Promise<void> {
+    const count = await this.prisma.btcDailyPrice.count();
+    if (count > maxRecords) {
+      const oldest = await this.prisma.btcDailyPrice.findFirst({
+        orderBy: { date: 'asc' },
+        select: { id: true },
+      });
+      if (oldest) {
+        await this.prisma.btcDailyPrice.delete({
+          where: { id: oldest.id },
+        });
+        console.log(`Registro mais antigo (id: ${oldest.id}) apagado. Total de registros: ${count - 1}`);
+      }
+    }
+  }
+  
   // async findByDate(date: Date): Promise<BtcDailyPrice | null> {
   //   const isoDate = date.toISOString().split("T")[0];
   //   const result = await this.prisma.btcDailyPrice.findFirst({

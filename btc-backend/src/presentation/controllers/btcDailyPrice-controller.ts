@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import { CreateBtcDailyPrice } from "../../domain/use-cases/BtcDailyPrice/create-BtcDailyPrice";
 import { ListBtcDailyPrice } from "../../domain/use-cases/BtcDailyPrice/list-BtcDailyPrice";
+import { GetBtcDailyPriceById } from "../../domain/use-cases/BtcDailyPrice/get-BtcDailyPriceById";
 import { MissingBtcDailyPrice } from "../../domain/use-cases/BtcDailyPrice/missing-BtcDailyPrice";
 
 export class BtcDailyPriceController {
   constructor(
     private readonly createBtcDailyPrice: CreateBtcDailyPrice,
     private readonly listBtcDailyPrice: ListBtcDailyPrice,
-    private readonly missingBtcDailyPrice: MissingBtcDailyPrice
+    private readonly missingBtcDailyPrice: MissingBtcDailyPrice,
   ) {}
 
   async create(req: Request, res: Response): Promise<void> {
@@ -37,14 +38,26 @@ export class BtcDailyPriceController {
     }
   }
 
+  // async findById(req: Request, res: Response): Promise<void> {
+  //   try {
+  //     const { id } = req.params;
+  //     const btcDailyPrice = await this.getBtcDailyPriceById.execute(+id);
+  //     res.status(201).json(btcDailyPrice);
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       res.status(400).json({ error: error.message });
+  //     } else {
+  //       res.status(400).json({ error: "Unknown error" });
+  //     }
+  //   }
+  // }
+
   async missing(req: Request, res: Response): Promise<void> {
     try {
       const endDate = new Date();
-      // endDate.setHours(23, 59, 59);
-      // endDate.setDate(endDate.getDate() - 1);
       const startDate = new Date();
-      startDate.setHours(0, 0, 0);
-      startDate.setDate(endDate.getDate() - 364);
+      const { previousDays } = req.params;
+      startDate.setDate(endDate.getDate() - Number(previousDays));
 
       const missing = await this.missingBtcDailyPrice.execute(startDate, endDate);
       res.status(200).json(missing);

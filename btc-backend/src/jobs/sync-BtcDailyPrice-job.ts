@@ -40,16 +40,15 @@ export class SyncBtcDailyPriceJob {
   }
 
   start(): void {
-    // Executa imediatamente ao iniciar a API
-    this.syncBtcDailyPrice.execute().catch(console.error);
+    // Executa sincronização histórica ao iniciar a API
+    this.syncBtcDailyPrice.execute(true).catch(console.error);
 
     // Agendamento diário às 20:59. O cron funciona por padrão no horário UTC (Coordinated Universal Time).
     // Brasília está no fuso horário UTC-3, então:20:59h em Brasília = 23:59.
       cron.schedule(
       "00 21 * * *",() => {
-        this.syncBtcDailyPrice.execute().catch(console.error);
+        this.syncBtcDailyPrice.execute(false).catch(console.error);
       },{timezone: "America/Sao_Paulo", scheduled: true,}
     );
   }
 }
-//

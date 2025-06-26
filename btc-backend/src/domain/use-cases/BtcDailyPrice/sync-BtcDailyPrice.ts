@@ -11,11 +11,10 @@ export class SyncBtcDailyPrice {
     private fetchCurrentPrice: () => Promise<{ date: Date; price: number }>
   ) {}
 
-  async execute(): Promise<void> {
+  async execute(isInitialRun: boolean = false): Promise<void> {
     const endDate = new Date();
     const startDate = new Date();
     startDate.setDate(endDate.getDate() - 364);
-    // endDate.setDate(endDate.getDate() - 1);
 
     // Verificar dias faltantes
     const missingDates = await this.btcDailyRepositoryInterface.getMissingDates(
@@ -26,20 +25,10 @@ export class SyncBtcDailyPrice {
     if (missingDates.length === 0) return;
 
     const today = new Date().toISOString().split("T")[0];
-
-    if (missingDates.length === 1 && missingDates[0] === today) {
-      const currentPrice = await this.fetchCurrentPrice();
-      const price = new BtcDailyPrice(currentPrice.price, currentPrice.date);
-      await this.btcDailyRepositoryInterface.create(price);
-    }
-
-    const historicalDates = missingDates.filter((d) => d !== today);
-    const hasToday = missingDates.some((d) => d === today);
-
-    // Buscar preços históricos da CoinGecko, se necessário
     let pricesToCreate: { date: Date; price: number }[] = [];
+    const historicalDates = missingDates.filter((d) => d !== today);
 
-    if (historicalDates.length > 0) {
+    if (isInitialRun && historicalDates.length > 0) {
       const pricesOfTheLast365Days = await this.fetchHistoricalPrices(startDate, endDate);
 
       // Criar um mapa de preços por data (em formato YYYY-MM-DD) para busca eficiente
@@ -57,18 +46,20 @@ export class SyncBtcDailyPrice {
           return price !== undefined ? price : null;
         })
         .filter((item): item is { date: Date; price: number } => item !== null);
+    } else if (missingDates.length === 1 && missingDates.includes(today)) {
+      const currentPrice = await this.fetchCurrentPrice();
+      pricesToCreate.push(currentPrice);
     }
-
-    // Buscar preço atual da Binance, se necessário
-    // if (hasToday) {
-    // const currentPrice = await this.fetchCurrentPrice();
-    // pricesToCreate.push(currentPrice);
-    // }
 
     // Criar registros no banco
     for (const priceData of pricesToCreate) {
       const price = new BtcDailyPrice(priceData.price, priceData.date);
       await this.btcDailyRepositoryInterface.create(price);
+    }
+
+    // Apagar o registro mais antigo se houver mais de 1825 registros
+    if (pricesToCreate.length > 0) {
+      await this.btcDailyRepositoryInterface.deleteOldestIfExceeds(1825);
     }
   }
 }

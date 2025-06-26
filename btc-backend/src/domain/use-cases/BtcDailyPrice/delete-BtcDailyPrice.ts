@@ -1,14 +1,14 @@
 // src/domain/use-cases/transaction/delete-transaction.ts
-import { TransactionRepository } from '../../repositories/transaction-repository';
+import BtcDailyRepositoryInterface from '../../repositories/BtcDailyPrice-repository';
 
-export class DeleteTransaction {
-  constructor(private readonly transactionRepository: TransactionRepository) {}
+export class DeleteBtcDailyPrice {
+  constructor(private readonly btcDailyRepository: BtcDailyRepositoryInterface) {}
 
   async execute(id: string): Promise<void> {
-    const transaction = await this.transactionRepository.findById(id);
-    if (!transaction) {
-      throw new Error('Transaction not found');
+    const priceAndDayToDelete = await this.btcDailyRepository.findById(id);
+    if (!priceAndDayToDelete) {
+      throw new Error('Price and date to delete not found');
     }
-    await this.transactionRepository.delete(id);
+    await this.btcDailyRepository.delete(id);
   }
 }
