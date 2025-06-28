@@ -27,7 +27,7 @@ services:
     env_file:
       - ./btc-backend/.env
     depends_on:
-      - 
+      - mysql
     networks:
         - btc-network
 
