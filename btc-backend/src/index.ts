@@ -1,13 +1,8 @@
 import express from "express";
 import { initializeDatabase } from "./config/database";
-import { BtcDailyPriceController } from "./presentation/controllers/btcDailyPrice-controller";
-import { CreateBtcDailyPrice } from "./domain/use-cases/BtcDailyPrice/create-BtcDailyPrice";
-import { ListBtcDailyPrice } from "./domain/use-cases/BtcDailyPrice/list-BtcDailyPrice";
-import { MissingBtcDailyPrice } from "./domain/use-cases/BtcDailyPrice/missing-BtcDailyPrice";
-import { BtcDailyPriceRepositoryPrisma } from "./infrastructure/repositories/BtcDailyPriceRepositoryPrisma";
-import prisma from "./infrastructure/database/prisma/prisma-client";
-import { btcDailyPriceRoutes } from "./presentation/routes/btcDailyPrice-routes";
+import btcDailyPriceRoutes from "./presentation/routes/btcDailyPrice-routes";
 import { SyncBtcDailyPriceJob } from "./jobs/sync-BtcDailyPrice-job";
+import btcRealtimePriceRoutes from "./presentation/routes/BtcRealtimePrice-Routes";
 
 const app = express();
 app.use(express.json());
@@ -16,19 +11,9 @@ app.use(express.json());
 const syncJob = new SyncBtcDailyPriceJob();
 syncJob.start();
 
-// Inicializa dependências
-const btcDailyPriceRepository = new BtcDailyPriceRepositoryPrisma(prisma);
-const createBtcDailyPrice = new CreateBtcDailyPrice(btcDailyPriceRepository);
-const listBtcDailyPrice = new ListBtcDailyPrice(btcDailyPriceRepository);
-const missingBtcDailyPrice = new MissingBtcDailyPrice(btcDailyPriceRepository);
-const btcDailyPriceController = new BtcDailyPriceController(
-  createBtcDailyPrice,
-  listBtcDailyPrice,
-  missingBtcDailyPrice
-);
-
 // Define rotas
-app.use("/btc-daily-price", btcDailyPriceRoutes(btcDailyPriceController));
+app.use("/api/btc-daily-price", btcDailyPriceRoutes);
+app.use("/api/realtime-price", btcRealtimePriceRoutes);
 
 // Middleware de erro global
 app.use(

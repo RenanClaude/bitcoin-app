@@ -70,5 +70,4 @@ export class BtcDailyPriceController {
     }
   }
 
-  // Outros métodos (update, delete, findById, findAll) seguem estrutura similar
 }
