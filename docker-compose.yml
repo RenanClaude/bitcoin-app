@@ -23,7 +23,7 @@ services:
     container_name: btc_app_api
     restart: always
     ports: 
-      - "3000:3000" # A porta da API não precisa ser exposta publicamente se o frontend for o único a acessar a API. Isso aumenta a segurança, pois a API só é acessível dentro da rede btc-network.
+      - "3001:3001" # A porta da API não precisa ser exposta publicamente se o frontend for o único a acessar a API. Isso aumenta a segurança, pois a API só é acessível dentro da rede btc-network.
     env_file:
       - ./btc-backend/.env
     depends_on:
@@ -36,7 +36,7 @@ services:
       container_name: btc_app_frontend
       restart: always
       ports:
-        - "3001:3000"
+        - "3000:3000"
       environment:
         - NEXT_PUBLIC_API_URL=http://api:3000 # Define a URL da API para o frontend. O prefixo NEXT_PUBLIC_ é necessário para variáveis de ambiente disponíveis no lado do cliente no Next.js. Usamos http://api:3000 porque api é o nome do serviço no docker-compose, e o Docker resolve esse nome internamente na rede.
       depends_on:

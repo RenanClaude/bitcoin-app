@@ -12,3 +12,8 @@ export interface UpdateTransactionDTO {
   description?: string;
   category?: string;
 }
+
+export interface BtcRealtimePriceDto {
+  price: string;
+  timestamp: number;
+}

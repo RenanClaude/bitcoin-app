@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { initializeDatabase } from "./config/database";
 import btcDailyPriceRoutes from "./presentation/routes/btcDailyPrice-routes";
 import { SyncBtcDailyPriceJob } from "./jobs/sync-BtcDailyPrice-job";
@@ -6,6 +7,7 @@ import btcRealtimePriceRoutes from "./presentation/routes/BtcRealtimePrice-Route
 
 const app = express();
 app.use(express.json());
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 // Inicializar o job de sincronização
 const syncJob = new SyncBtcDailyPriceJob();
@@ -31,7 +33,7 @@ app.use(
 // Inicia o servidor
 async function startServer() {
   await initializeDatabase();
-  app.listen(3000, () => console.log("Server running on port 3000"));
+  app.listen(3001, () => console.log("Server running on port 3001"));
 }
 
 startServer();
