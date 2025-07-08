@@ -1,3 +1,57 @@
+# services:
+#   mysql:
+#     image: mysql:8.0
+#     container_name: btc_app_db
+#     restart: always
+#     environment:
+#       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+#       MYSQL_DATABASE: ${MYSQL_DATABASE}
+#       MYSQL_USER: ${MYSQL_USER}
+#       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+#     volumes:
+#       - mysql-data:/var/lib/mysql
+#       - ./init_btc_table.sql:/docker-entrypoint-initdb.d/init_btc_table.sql
+#     env_file:
+#       - .env
+#     ports:
+#       - "3307:3306"
+#     networks:
+#         - btc-network
+
+#   api:
+#     build: ./btc-backend
+#     container_name: btc_app_api
+#     restart: always
+#     ports: 
+#       - "3001:3001" # A porta da API não precisa ser exposta publicamente se o frontend for o único a acessar a API. Isso aumenta a segurança, pois a API só é acessível dentro da rede btc-network.
+#     env_file:
+#       - ./btc-backend/.env
+#     depends_on:
+#       - mysql
+#     networks:
+#         - btc-network
+
+#   frontend:
+#       build: ./btc-frontend
+#       container_name: btc_app_frontend
+#       restart: always
+#       ports:
+#         - "3000:3000"
+#       environment:
+#         - NEXT_PUBLIC_API_URL=http://api:3000 # Define a URL da API para o frontend. O prefixo NEXT_PUBLIC_ é necessário para variáveis de ambiente disponíveis no lado do cliente no Next.js. Usamos http://api:3000 porque api é o nome do serviço no docker-compose, e o Docker resolve esse nome internamente na rede.
+#       depends_on:
+#         - api
+#       networks:
+#         - btc-network
+
+# volumes:
+#   mysql-data:
+#     name: btc_app_mysql_data
+
+# networks:
+#   btc-network:
+#     driver: bridge
+
 services:
   mysql:
     image: mysql:8.0
@@ -16,33 +70,50 @@ services:
     ports:
       - "3307:3306"
     networks:
-        - btc-network
+      - btc-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   api:
-    build: ./btc-backend
+    build:
+      context: ./btc-backend
+      dockerfile: Dockerfile.dev
     container_name: btc_app_api
-    restart: always
     ports: 
       - "3001:3001" # A porta da API não precisa ser exposta publicamente se o frontend for o único a acessar a API. Isso aumenta a segurança, pois a API só é acessível dentro da rede btc-network.
+    restart: always
     env_file:
       - ./btc-backend/.env
+    volumes:
+      - ./btc-backend:/app
+      - /app/node_modules
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
-        - btc-network
+      - btc-network
 
   frontend:
-      build: ./btc-frontend
-      container_name: btc_app_frontend
-      restart: always
-      ports:
-        - "3000:3000"
-      environment:
-        - NEXT_PUBLIC_API_URL=http://api:3000 # Define a URL da API para o frontend. O prefixo NEXT_PUBLIC_ é necessário para variáveis de ambiente disponíveis no lado do cliente no Next.js. Usamos http://api:3000 porque api é o nome do serviço no docker-compose, e o Docker resolve esse nome internamente na rede.
-      depends_on:
-        - api
-      networks:
-        - btc-network
+    build:
+      context: ./btc-frontend
+      dockerfile: Dockerfile.dev
+    container_name: btc_app_frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api:3001
+    volumes:
+      - ./btc-frontend:/app
+      - /app/node_modules
+    depends_on:
+      - api
+    networks:
+      - btc-network
 
 volumes:
   mysql-data:
