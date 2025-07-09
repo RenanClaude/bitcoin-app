@@ -43,7 +43,25 @@ export class SyncBtcDailyPriceJob {
       const date = new Date();
       return { date, price: parseFloat(response.data.price) };
     } catch (error: any) {
-      throw new Error(`Falha ao buscar preço atual da Binance: ${error.message}`);
+      console.error(`Falha ao buscar preço da Binance: ${error.message}`);
+      
+      // Tenta a API da CoinGecko como fallback
+      try {
+        const response = await axios.get(
+          "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1&interval=daily"
+        );
+        const latestPrice = response.data.prices[response.data.prices.length - 1];
+        if (!latestPrice || !latestPrice[1]) {
+          throw new Error("Resposta inválida da CoinGecko: preço não encontrado");
+        }
+        const date = new Date();
+        console.log("Preço atual obtido da CoinGecko (fallback):", latestPrice[1]);
+        return { date, price: latestPrice[1] };
+      } catch (fallbackError: any) {
+        throw new Error(
+          `Falha ao buscar preço atual. Binance: ${error.message}. CoinGecko: ${fallbackError.message}`
+        );
+      }
     }
   }
 

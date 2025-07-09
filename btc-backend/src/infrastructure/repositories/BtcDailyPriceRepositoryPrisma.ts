@@ -91,10 +91,11 @@ export class BtcDailyPriceRepositoryPrisma implements BtcDailyRepositoryInterfac
       where: { date: { gte: beginningOfTheDay, lte: endOfTheDay } },
       select: { id: true },
     });
-
-    await this.prisma.btcDailyPrice.delete({
-      where: { id: dateToDelete?.id },
-    });
+    if (dateToDelete) {
+      await this.prisma.btcDailyPrice.delete({
+        where: { id: dateToDelete.id },
+      });
+    }
   }
 
   async findById(id: number): Promise<BtcDailyPrice | null> {

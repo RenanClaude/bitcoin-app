@@ -27,7 +27,8 @@ export class SyncBtcDailyPrice {
     let pricesToCreate: { date: Date; price: number }[] = [];
     const historicalDates = missingDates.filter((d) => d !== today);
 
-    if (isInitialRun && historicalDates.length > 0) {
+    // if (isInitialRun && historicalDates.length > 0) {
+    if (historicalDates.length != 1) {
       const pricesOfTheLast365Days = await this.fetchHistoricalPrices(startDate, endDate);
 
       // Criar um mapa de preços por data (em formato YYYY-MM-DD) para busca eficiente
@@ -48,7 +49,11 @@ export class SyncBtcDailyPrice {
     } else if (missingDates.length === 1 && missingDates.includes(today)) {
       const currentPrice = await this.fetchCurrentPrice();
       pricesToCreate.push(currentPrice);
-    }
+    } 
+    //  if (missingDates.length === 1 && !missingDates.includes(today)) {
+    //   // Implementar lógica para o caso de faltar uma data que não seja a atual.
+    // }
+
 
     // Criar registros no banco
     for (const priceData of pricesToCreate) {
