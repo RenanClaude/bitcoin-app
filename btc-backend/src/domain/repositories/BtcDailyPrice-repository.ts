@@ -6,7 +6,6 @@ export default interface BtcDailyRepositoryInterface {
   getMissingDates(startDate: Date, endDate: Date): Promise<string[]>;
   findById(id: number): Promise<BtcDailyPrice | null>;
   deleteOldestIfExceeds(maxRecords: number): Promise<void>;
-  // findByDate(date: Date): Promise<BtcDailyPrice | null>;
-  // update(id: string, transaction: BtcDailyPrice): Promise<void>;
-  // deleteById(id: number): Promise<void>;
+  getDatesInRange(startDate: Date, endDate: Date): Promise<string[]>
+  deleteByDate(date: Date): Promise<void>
 }

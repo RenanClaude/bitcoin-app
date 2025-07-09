@@ -21,7 +21,6 @@ export class SyncBtcDailyPrice {
       startDate,
       endDate
     );
-
     if (missingDates.length === 0) return;
 
     const today = new Date().toISOString().split("T")[0];
@@ -54,6 +53,7 @@ export class SyncBtcDailyPrice {
     // Criar registros no banco
     for (const priceData of pricesToCreate) {
       const price = new BtcDailyPrice(priceData.price, priceData.date);
+      await this.btcDailyRepositoryInterface.deleteByDate(price.date);
       await this.btcDailyRepositoryInterface.create(price);
     }
 
