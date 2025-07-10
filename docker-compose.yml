@@ -1,3 +1,4 @@
+# PRODUCTION
 # services:
 #   mysql:
 #     image: mysql:8.0
@@ -19,7 +20,9 @@
 #         - btc-network
 
 #   api:
-#     build: ./btc-backend
+#     build: 
+#       context: ./btc-backend
+#       dockerfile: Dockerfile
 #     container_name: btc_app_api
 #     restart: always
 #     ports: 
@@ -32,7 +35,9 @@
 #         - btc-network
 
 #   frontend:
-#       build: ./btc-frontend
+#       build: 
+#         context: ./btc-frontend
+#         dockerfile: Dockerfile
 #       container_name: btc_app_frontend
 #       restart: always
 #       ports:
@@ -52,6 +57,7 @@
 #   btc-network:
 #     driver: bridge
 
+# DEVELOPMENT
 services:
   mysql:
     image: mysql:8.0

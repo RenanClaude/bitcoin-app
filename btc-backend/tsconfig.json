@@ -5,7 +5,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "outDir": "dist"
+    "outDir": "dist" // Define para onde o código .ts será compilado. Todos os arquivos .ts serão convertidos para .js dentro da pasta dist.
   },
   "include": ["src"]
 }
